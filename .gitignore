@@ -1,0 +1,6 @@
+.idea
+/.database
+/logs
+/configs
+/internal/tmpService
+.env
