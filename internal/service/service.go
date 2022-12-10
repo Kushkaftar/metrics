@@ -34,7 +34,7 @@ type Service struct {
 
 func NewService(lg *zap.Logger, ym *metrics.Metrics, db *db.DB, promo *promo.Promo) *Service {
 	return &Service{
-		Domain:  newDomainSRV(lg, db.Domain, promo),
+		Domain:  newDomainSRV(lg, db, promo, ym),
 		Label:   newLabelSRV(lg, db, promo, ym),
 		Counter: newCounterSRV(lg, db, promo, ym),
 	}

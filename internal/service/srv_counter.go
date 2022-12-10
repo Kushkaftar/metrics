@@ -79,6 +79,7 @@ func (srv *CounterSRV) GetCounters(domain models.Domain) ([]models.Counter, erro
 	srv.lg.Info("2 - SERVICE GetCounters, crete slice domainCounters")
 	check := counterService.NewCounterService(srv.lg, srv.db, srv.promo, srv.metrics)
 	srv.lg.Info("3 - SERVICE GetCounters, init check counter")
+
 	// получаем метки домена
 	labels, err := srv.db.Label.GetLabelInDomainID(domain.ID)
 	srv.lg.Info("4 - SERVICE GetCounters, get labels")

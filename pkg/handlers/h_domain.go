@@ -25,8 +25,8 @@ func (h *Handler) setStatus(c *gin.Context) {
 		return
 	}
 
-	if !(domain.Status == 2 || domain.Status == 3) {
-		str := "status is 2 or 3"
+	if !(domain.Status == 1 || domain.Status == 2) {
+		str := "status is 1 or 2"
 		newErrorResponse(c, http.StatusBadRequest, str)
 		return
 	}

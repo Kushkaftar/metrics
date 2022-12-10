@@ -6,12 +6,14 @@ import (
 	"metrics/internal/models"
 	"metrics/pkg/db"
 	"metrics/pkg/metrics"
+	"metrics/pkg/promo"
 )
 
 type LabelService struct {
-	lg *zap.Logger
-	ym *metrics.Metrics
-	db *db.DB
+	lg    *zap.Logger
+	ym    *metrics.Metrics
+	db    *db.DB
+	promo *promo.Promo
 }
 
 // todo: реализовать логгирование метки в случае ошибки
@@ -105,10 +107,11 @@ func (s *LabelService) createLabelMetric(label *models.Label) (bool, error) {
 	return true, nil
 }
 
-func NewLabelService(lg *zap.Logger, ym *metrics.Metrics, db *db.DB) *LabelService {
+func NewLabelService(lg *zap.Logger, ym *metrics.Metrics, db *db.DB, promo *promo.Promo) *LabelService {
 	return &LabelService{
-		lg: lg,
-		ym: ym,
-		db: db,
+		lg:    lg,
+		ym:    ym,
+		db:    db,
+		promo: promo,
 	}
 }

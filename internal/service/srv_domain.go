@@ -1,8 +1,11 @@
 package service
 
 import (
+	"metrics/internal/counterService"
+	"metrics/internal/labelService"
 	"metrics/internal/models"
 	"metrics/pkg/db"
+	"metrics/pkg/metrics"
 	"metrics/pkg/promo"
 
 	"go.uber.org/zap"
@@ -17,8 +20,9 @@ const (
 
 type DomainSRV struct {
 	lg    *zap.Logger
-	db    db.Domain
+	db    *db.DB
 	promo *promo.Promo
+	ym    *metrics.Metrics
 }
 
 func (srv *DomainSRV) GetAllDomains() ([]models.Domain, error) {
@@ -84,25 +88,58 @@ func (srv *DomainSRV) SetStatus(domain models.Domain) error {
 }
 
 func (srv *DomainSRV) Run() error {
+
 	// получаем домены из БД
 	dbDomains, err := srv.db.GetAllDomains()
 	if err != nil {
 		return err
 	}
 
+	checkLabels := labelService.NewLabelService(srv.lg, srv.ym, srv.db, srv.promo)
+	checkConters := counterService.NewCounterService(srv.lg, srv.db, srv.promo, srv.ym)
+
 	// выбираем домены обхода
 	for _, domain := range dbDomains {
 		if domain.Status == statusWatch {
-			// TODO: дописать логику
+
+			// получаем метки домена
+			labels, err := checkLabels.CheckLabels(domain)
+			if err != nil {
+				// todo: add log error
+				continue
+			}
+
+			//  проверяем что они есть
+			if len(labels) != 0 {
+				for _, label := range labels {
+					counters, err := srv.promo.GetPromoUrls(&label)
+					if err != nil {
+						// todo: add log error
+						continue
+					}
+
+					for _, counter := range counters {
+						_, err := checkConters.CheckCounter(&counter)
+						if err != nil {
+							// todo: add log error
+							continue
+						}
+
+					}
+				}
+			}
+
 		}
 	}
+
 	return nil
 }
 
-func newDomainSRV(lg *zap.Logger, db db.Domain, promo *promo.Promo) *DomainSRV {
+func newDomainSRV(lg *zap.Logger, db *db.DB, promo *promo.Promo, ym *metrics.Metrics) *DomainSRV {
 	return &DomainSRV{
 		lg:    lg,
 		db:    db,
 		promo: promo,
+		ym:    ym,
 	}
 }

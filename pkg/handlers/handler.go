@@ -32,7 +32,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		domain := api.Group("domain")
 		{
 			domain.GET("", h.getAllDomains)
-			domain.POST("", h.setStatus)
+			domain.POST("/set_status", h.setStatus)
 			domain.POST("/check_labels", h.addLabels)
 
 			labels := domain.Group("/:id/labels")
