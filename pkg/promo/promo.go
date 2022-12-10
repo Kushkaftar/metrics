@@ -1,9 +1,9 @@
 package promo
 
 import (
-	"go.uber.org/zap"
 	"metrics/internal/models"
-	"metrics/pkg/config"
+
+	"go.uber.org/zap"
 )
 
 type Promo struct {
@@ -17,7 +17,7 @@ type Methods interface {
 	GetPromoUrls(domain *models.Domain) ([]models.Counter, error)
 }
 
-func NewPromo(c *config.Promo, lg *zap.Logger) *Promo {
+func NewPromo(c *models.Promo, lg *zap.Logger) *Promo {
 	return &Promo{
 		lg:   lg,
 		path: c.Path,

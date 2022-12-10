@@ -1,11 +1,11 @@
 package metrics
 
 import (
-	"go.uber.org/zap"
 	"metrics/internal/models"
-	"metrics/pkg/client"
-	"metrics/pkg/config"
+	"metrics/pkg/utils/client"
 	"metrics/pkg/utils/urlKit"
+
+	"go.uber.org/zap"
 )
 
 const (
@@ -32,7 +32,7 @@ type CounterMethods interface {
 	DelCounter(counter *models.Counter) error
 }
 
-func NewMetrics(c *config.Config, lg *zap.Logger) *Metrics {
+func NewMetrics(c *models.Config, lg *zap.Logger) *Metrics {
 
 	return &Metrics{
 		lg:     lg,

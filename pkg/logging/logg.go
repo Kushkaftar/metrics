@@ -2,14 +2,15 @@ package logging
 
 import (
 	"fmt"
+	"log"
+	"metrics/internal/models"
+	"os"
+
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"log"
-	"metrics/pkg/config"
-	"os"
 )
 
-func NewLogger(c *config.Config) *zap.Logger {
+func NewLogger(c *models.Config) *zap.Logger {
 	cfg := zap.NewProductionEncoderConfig()
 	cfg.EncodeTime = zapcore.ISO8601TimeEncoder
 	fileEncoder := zapcore.NewJSONEncoder(cfg)

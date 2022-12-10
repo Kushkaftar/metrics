@@ -1,7 +1,8 @@
 "use strict";
 var ymetrika = {
-    {{range .Counters}}
-    {{.Name}}:{{.ID}},
+    {{range .}}
+    {{.MetricName}}: {{.MetricID}},
+    {{end}}
 };
 var metriks = function metriks(label) {
     (function (m, e, t, r, i, k, a) {

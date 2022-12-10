@@ -2,7 +2,6 @@ package counterService
 
 import (
 	"go.uber.org/zap"
-	"log"
 	"metrics/internal/models"
 	"metrics/pkg/db"
 	"metrics/pkg/metrics"
@@ -23,7 +22,6 @@ func (s *CounterService) CheckCounter(counter *models.Counter) (bool, error) {
 	}
 
 	if checkDB {
-		log.Printf("conter - %+v", counter)
 		return true, nil
 	}
 

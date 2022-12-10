@@ -1,12 +1,14 @@
 package config
 
 import (
-	"github.com/spf13/viper"
 	"log"
+	"metrics/internal/models"
+
+	"github.com/spf13/viper"
 )
 
-func NewConfig(fileName, directory string) (*Config, error) {
-	var config Config
+func NewConfig(fileName, directory string) (*models.Config, error) {
+	var config models.Config
 
 	if err := initConfig(fileName, directory); err != nil {
 		log.Fatalf("crush init config, %v", err)

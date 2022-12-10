@@ -8,7 +8,7 @@ CREATE TABLE domain
 CREATE TABLE labels
 (
     id serial not null  unique,
-    domain_id varchar(255) not null,
+    domain_id int not null,
     metric_name varchar(255) not null unique,
     metric_id int not null
 );
@@ -17,6 +17,7 @@ CREATE TABLE counters
 (
     id serial not null  unique,
     metric_name varchar(255) not null unique,
-    metric_id int not null,
-    label_id int
+    metric_id int not null unique,
+    label_id int not null,
+    created_at date default current_date
 );

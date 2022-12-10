@@ -1,10 +1,11 @@
 package service
 
 import (
-	"go.uber.org/zap"
 	"metrics/internal/models"
 	"metrics/pkg/db"
 	"metrics/pkg/promo"
+
+	"go.uber.org/zap"
 )
 
 const (
@@ -20,15 +21,15 @@ type DomainSRV struct {
 	promo *promo.Promo
 }
 
-func (d *DomainSRV) GetAllDomains() ([]models.Domain, error) {
+func (srv *DomainSRV) GetAllDomains() ([]models.Domain, error) {
 	// получем домены из репозитория
-	promoDomains, err := d.promo.GetAllDomains()
+	promoDomains, err := srv.promo.GetAllDomains()
 	if err != nil {
 		return nil, err
 	}
 
 	// получаем домены из БД
-	dbDomains, err := d.db.GetAllDomains()
+	dbDomains, err := srv.db.GetAllDomains()
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +46,7 @@ func (d *DomainSRV) GetAllDomains() ([]models.Domain, error) {
 	if len(addToDB) != 0 {
 		for _, domain := range addToDB {
 			domain.Status = statusNew
-			if err := d.db.CreateDomain(&domain); err != nil {
+			if err := srv.db.CreateDomain(&domain); err != nil {
 				// todo ???
 				continue
 			}
@@ -56,7 +57,7 @@ func (d *DomainSRV) GetAllDomains() ([]models.Domain, error) {
 	if len(ignoreDB) != 0 {
 		for _, domain := range ignoreDB {
 			domain.Status = statusDelete
-			if err := d.db.UpdateStatus(&domain); err != nil {
+			if err := srv.db.UpdateStatus(&domain); err != nil {
 				// todo ???
 				continue
 			}
@@ -64,7 +65,7 @@ func (d *DomainSRV) GetAllDomains() ([]models.Domain, error) {
 	}
 
 	// повторно запрашиваем домены из БД
-	dbDomains, err = d.db.GetAllDomains()
+	dbDomains, err = srv.db.GetAllDomains()
 	if err != nil {
 		return nil, err
 	}
@@ -72,13 +73,29 @@ func (d *DomainSRV) GetAllDomains() ([]models.Domain, error) {
 	return dbDomains, nil
 }
 
-func (d *DomainSRV) SetStatus(domain models.Domain) error {
+func (srv *DomainSRV) SetStatus(domain models.Domain) error {
 
 	// устанавливаем статус
-	if err := d.db.UpdateStatus(&domain); err != nil {
+	if err := srv.db.UpdateStatus(&domain); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+func (srv *DomainSRV) Run() error {
+	// получаем домены из БД
+	dbDomains, err := srv.db.GetAllDomains()
+	if err != nil {
+		return err
+	}
+
+	// выбираем домены обхода
+	for _, domain := range dbDomains {
+		if domain.Status == statusWatch {
+			// TODO: дописать логику
+		}
+	}
 	return nil
 }
 

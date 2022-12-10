@@ -24,6 +24,8 @@ type Label interface {
 type Counter interface {
 	CreateCounter(counter *models.Counter) error
 	GetCounter(counter *models.Counter) error
+	GetLabelInNewCounters() ([]int, error)
+	GetCountersLabel(LabelID int) ([]models.Counter, error)
 }
 
 type DB struct {

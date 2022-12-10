@@ -14,14 +14,14 @@ type LabelDB struct {
 
 //todo refactor
 
-func (l LabelDB) CreateLabel(label *models.Label) error {
+func (db LabelDB) CreateLabel(label *models.Label) error {
 	var id int
 
 	query := fmt.Sprintf("INSERT INTO %s (domain_id, metric_name, metric_id) values ($1, $2, $3) RETURNING id", labelsTable)
 
-	row := l.db.QueryRow(query, label.DomainID, label.MetricName, label.MetricID)
+	row := db.db.QueryRow(query, label.DomainID, label.MetricName, label.MetricID)
 	if err := row.Scan(&id); err != nil {
-		l.lg.Error("CreateLabel",
+		db.lg.Error("CreateLabel",
 			zap.Error(err))
 		return err
 	}
@@ -31,26 +31,26 @@ func (l LabelDB) CreateLabel(label *models.Label) error {
 	return nil
 }
 
-func (l LabelDB) GetLabelsInIdDomain(domain *models.Domain) ([]models.Label, error) {
+//func (l LabelDB) GetLabelsInIdDomain(domain *models.Domain) ([]models.Label, error) {
+//	var labels []models.Label
+//
+//	query := fmt.Sprintf("SELECT * FROM %s WHERE domain_id=$1", labelsTable)
+//	if err := l.db.Select(&labels, query, domain.ID); err != nil {
+//		l.lg.Error("GetAllLabels",
+//			zap.Error(err))
+//
+//		return nil, err
+//	}
+//
+//	return labels, nil
+//}
+
+func (db LabelDB) GetLabelInDomainID(domainID int) ([]models.Label, error) {
 	var labels []models.Label
 
 	query := fmt.Sprintf("SELECT * FROM %s WHERE domain_id=$1", labelsTable)
-	if err := l.db.Select(&labels, query, domain.ID); err != nil {
-		l.lg.Error("GetAllLabels",
-			zap.Error(err))
-
-		return nil, err
-	}
-
-	return labels, nil
-}
-
-func (l LabelDB) GetLabelInDomainID(domainID int) ([]models.Label, error) {
-	var labels []models.Label
-
-	query := fmt.Sprintf("SELECT * FROM %s WHERE domain_id=$1", labelsTable)
-	if err := l.db.Select(&labels, query, domainID); err != nil {
-		l.lg.Error("GetLabelInDomainID",
+	if err := db.db.Select(&labels, query, domainID); err != nil {
+		db.lg.Error("GetLabelInDomainID",
 
 			zap.Int("domainID", domainID),
 			zap.Error(err))
@@ -60,12 +60,12 @@ func (l LabelDB) GetLabelInDomainID(domainID int) ([]models.Label, error) {
 	return labels, nil
 }
 
-func (l LabelDB) GetLabelInID(id int) (*models.Label, error) {
+func (db LabelDB) GetLabelInID(id int) (*models.Label, error) {
 	var label models.Label
 
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id=$1", labelsTable)
-	if err := l.db.Get(&label, query, id); err != nil {
-		l.lg.Error("GetLabelInID",
+	if err := db.db.Get(&label, query, id); err != nil {
+		db.lg.Error("GetLabelInID",
 
 			zap.Int("id", id),
 			zap.Error(err))
@@ -75,12 +75,12 @@ func (l LabelDB) GetLabelInID(id int) (*models.Label, error) {
 	return &label, nil
 }
 
-func (l LabelDB) GetLabelInName(label *models.Label) error {
+func (db LabelDB) GetLabelInName(label *models.Label) error {
 	var labelDB models.Label
 
 	query := fmt.Sprintf("SELECT * FROM %s WHERE metric_name=$1", labelsTable)
-	if err := l.db.Get(&labelDB, query, label.MetricName); err != nil {
-		l.lg.Error("GetLabelInName",
+	if err := db.db.Get(&labelDB, query, label.MetricName); err != nil {
+		db.lg.Error("GetLabelInName",
 
 			zap.String("metric_name", label.MetricName),
 			zap.Error(err))
@@ -94,12 +94,12 @@ func (l LabelDB) GetLabelInName(label *models.Label) error {
 	return nil
 }
 
-func (l LabelDB) GetAllLabels() ([]models.Label, error) {
+func (db LabelDB) GetAllLabels() ([]models.Label, error) {
 	var labels []models.Label
 
 	query := fmt.Sprintf("SELECT * FROM %s", labelsTable)
-	if err := l.db.Select(&labels, query); err != nil {
-		l.lg.Error("GetAllLabels",
+	if err := db.db.Select(&labels, query); err != nil {
+		db.lg.Error("GetAllLabels",
 			zap.Error(err))
 
 		return nil, err

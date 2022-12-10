@@ -3,4 +3,5 @@
 /logs
 /configs
 /internal/tmpService
+/tmp
 .env

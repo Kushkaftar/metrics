@@ -1,4 +1,4 @@
-package config
+package models
 
 type Config struct {
 	Logs    Logs

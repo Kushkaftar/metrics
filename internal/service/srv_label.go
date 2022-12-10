@@ -3,40 +3,48 @@ package service
 import (
 	"errors"
 	"fmt"
-	"go.uber.org/zap"
 	"metrics/internal/labelService"
 	"metrics/internal/models"
 	"metrics/pkg/db"
 	"metrics/pkg/metrics"
 	"metrics/pkg/promo"
+
+	"go.uber.org/zap"
 )
 
 type labelSRV struct {
 	lg      *zap.Logger
-	db      db.Label
+	db      *db.DB
 	promo   *promo.Promo
 	metrics *metrics.Metrics
 }
 
-func (l *labelSRV) GetLabels(domain models.Domain) ([]models.Label, error) {
+func (srv *labelSRV) AddLabels(domain models.Domain) ([]models.Label, error) {
 	var labels []models.Label
 
+	// получаем домен из БД и берем его id
+	domainDB, err := srv.db.Domain.GetDomain(domain.Name)
+	if err != nil {
+		return nil, err
+	}
+
 	// получаем метки домена
-	labelsPromo, err := l.promo.GetAllLabels(domain)
+	labelsPromo, err := srv.promo.GetAllLabels(domain)
 	if err != nil {
 		return nil, err
 	}
 
 	// инитим пакет с логикой заведения/запроса метки
-	ls := labelService.NewLabelService(l.lg, l.metrics, l.db)
+	ls := labelService.NewLabelService(srv.lg, srv.metrics, srv.db)
 
 	// перебираем полученные метки из репозитория промо
 	for _, labelPromo := range labelsPromo {
+		labelPromo.DomainID = domainDB.ID
 
 		// передаем метку для запроса/заведения в бд и метрике, если есть ошибки просто их логгируем
 		check, err := ls.CheckLabel(&labelPromo)
 		if err != nil {
-			l.lg.Error("error check label",
+			srv.lg.Error("error check label",
 				zap.Error(err))
 		}
 
@@ -56,7 +64,20 @@ func (l *labelSRV) GetLabels(domain models.Domain) ([]models.Label, error) {
 	return labels, nil
 }
 
-func newLabelSRV(lg *zap.Logger, db db.Label, promo *promo.Promo, ym *metrics.Metrics) *labelSRV {
+func (srv *labelSRV) GetLabels(domain models.Domain) ([]models.Label, error) {
+	labels, err := srv.db.GetLabelInDomainID(domain.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(labels) == 0 {
+		return nil, errors.New("labels not found")
+	}
+
+	return labels, nil
+}
+
+func newLabelSRV(lg *zap.Logger, db *db.DB, promo *promo.Promo, ym *metrics.Metrics) *labelSRV {
 	return &labelSRV{
 		lg:      lg,
 		db:      db,

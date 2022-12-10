@@ -2,6 +2,7 @@ package labelService
 
 import (
 	"go.uber.org/zap"
+	"log"
 	"metrics/internal/models"
 	"metrics/pkg/db"
 	"metrics/pkg/metrics"
@@ -10,7 +11,7 @@ import (
 type LabelService struct {
 	lg *zap.Logger
 	ym *metrics.Metrics
-	db db.Label
+	db *db.DB
 }
 
 // todo: реализовать логгирование метки в случае ошибки
@@ -42,6 +43,8 @@ func (s *LabelService) CheckLabel(label *models.Label) (bool, error) {
 		return true, nil
 	}
 
+	// todo del log
+	log.Printf("labelPromo - %+v", label)
 	// создаем метку в метрике
 	if _, err = s.createLabelMetric(label); err != nil {
 		return false, err
@@ -102,7 +105,7 @@ func (s *LabelService) createLabelMetric(label *models.Label) (bool, error) {
 	return true, nil
 }
 
-func NewLabelService(lg *zap.Logger, ym *metrics.Metrics, db db.Label) *LabelService {
+func NewLabelService(lg *zap.Logger, ym *metrics.Metrics, db *db.DB) *LabelService {
 	return &LabelService{
 		lg: lg,
 		ym: ym,

@@ -1,19 +1,20 @@
 package run
 
 import (
-	"go.uber.org/zap"
+	"metrics/internal/models"
 	"metrics/internal/service"
-	"metrics/pkg/config"
 	"metrics/pkg/db"
 	"metrics/pkg/handlers"
 	"metrics/pkg/logging"
 	"metrics/pkg/metrics"
 	"metrics/pkg/promo"
 
+	"go.uber.org/zap"
+
 	_ "github.com/lib/pq"
 )
 
-func Run(c *config.Config) error {
+func Run(c *models.Config) error {
 	// LOGGER
 	lg := logging.NewLogger(c)
 

@@ -15,29 +15,38 @@ type Handler struct {
 func NewHandler(s *service.Service, lg *zap.Logger) *Handler {
 	return &Handler{
 		services: s,
+		lg:       lg,
 	}
 }
 
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
 
+	router.Use(cors.Default())
+
 	api := router.Group("/api")
 	{
+		api.GET("/unload", h.unload)
+		api.GET("/run", h.run)
+
 		domain := api.Group("domain")
 		{
-			domain.GET("/", h.getAllDomains)
-			domain.POST("/", h.setStatus)
-		}
-		label := api.Group("label")
-		{
-			label.POST("/", h.getLabels)
+			domain.GET("", h.getAllDomains)
+			domain.POST("", h.setStatus)
+			domain.POST("/check_labels", h.addLabels)
+
+			labels := domain.Group("/:id/labels")
+			{
+				labels.GET("", h.domainLabels)
+			}
+
 		}
 		counters := api.Group("counters")
 		{
-			counters.POST("/", h.getCounters)
+			counters.POST("/check", h.checkCounters)
+			counters.GET("", h.getCounters)
 		}
 	}
 
-	router.Use(cors.Default())
 	return router
 }

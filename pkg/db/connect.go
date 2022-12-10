@@ -2,8 +2,9 @@ package db
 
 import (
 	"fmt"
+	"metrics/internal/models"
+
 	"github.com/jmoiron/sqlx"
-	"metrics/pkg/config"
 )
 
 const (
@@ -12,7 +13,7 @@ const (
 	countersTable = "counters"
 )
 
-func NewPostgresDB(cfg config.DB) (*sqlx.DB, error) {
+func NewPostgresDB(cfg models.DB) (*sqlx.DB, error) {
 	dbConnect := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
 		cfg.Host, cfg.Port, cfg.Username, cfg.DBName, cfg.Password, cfg.SSLMode)
 
