@@ -2,10 +2,10 @@ package service
 
 import (
 	"go.uber.org/zap"
+	"metrics/internal/app/pkg/db"
+	"metrics/internal/app/pkg/metrics"
+	"metrics/internal/app/pkg/promo"
 	"metrics/internal/models"
-	"metrics/pkg/db"
-	"metrics/pkg/metrics"
-	"metrics/pkg/promo"
 )
 
 // todo: refactor

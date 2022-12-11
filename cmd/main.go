@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"log"
-	"metrics/internal/run"
+	"metrics/internal/pkg/app"
 	"metrics/pkg/config"
 )
 
@@ -21,7 +21,7 @@ func main() {
 		log.Fatalf("Error init config - %s", err)
 	}
 
-	if err = run.Run(c); err != nil {
+	if err = app.Run(c); err != nil {
 		log.Fatalf("fatal mistake - %s", err)
 	}
 }

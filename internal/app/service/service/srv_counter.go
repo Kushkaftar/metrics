@@ -3,12 +3,12 @@ package service
 import (
 	"errors"
 	"go.uber.org/zap"
-	"metrics/internal/counterService"
+	"metrics/internal/app/pkg/db"
+	"metrics/internal/app/pkg/metrics"
+	"metrics/internal/app/pkg/promo"
+	"metrics/internal/app/service/counterService"
 	"metrics/internal/models"
-	"metrics/pkg/db"
-	"metrics/pkg/metrics"
-	"metrics/pkg/promo"
-	"metrics/pkg/utils/unload"
+	"metrics/pkg/unload"
 )
 
 type CounterSRV struct {

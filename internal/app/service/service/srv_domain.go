@@ -1,14 +1,13 @@
 package service
 
 import (
-	"metrics/internal/counterService"
-	"metrics/internal/labelService"
-	"metrics/internal/models"
-	"metrics/pkg/db"
-	"metrics/pkg/metrics"
-	"metrics/pkg/promo"
-
 	"go.uber.org/zap"
+	"metrics/internal/app/pkg/db"
+	"metrics/internal/app/pkg/metrics"
+	"metrics/internal/app/pkg/promo"
+	"metrics/internal/app/service/counterService"
+	"metrics/internal/app/service/labelService"
+	"metrics/internal/models"
 )
 
 const (
