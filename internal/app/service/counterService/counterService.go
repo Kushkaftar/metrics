@@ -1,6 +1,7 @@
 package counterService
 
 import (
+	"database/sql"
 	"go.uber.org/zap"
 	"metrics/internal/app/pkg/db"
 	"metrics/internal/app/pkg/metrics"
@@ -51,9 +52,13 @@ func (s *CounterService) CheckCounter(counter *models.Counter) (bool, error) {
 
 func (s *CounterService) checkCounterDB(counter *models.Counter) (bool, error) {
 	if err := s.db.Counter.GetCounter(counter); err != nil {
-		if err.Error() == "sql: no rows in result set" {
+		if err == sql.ErrNoRows {
+			s.lg.Info("counter sql.ErrNoRows",
+				zap.Error(err))
 			return false, nil
 		} else {
+			s.lg.Info("counter sql err",
+				zap.Error(err))
 			return false, err
 		}
 	}

@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
-	"metrics/internal/models"
 	"net/http"
 )
 
@@ -31,20 +30,15 @@ func (h *Handler) unloadAllNewCounters(c *gin.Context) {
 }
 
 func (h *Handler) unload(c *gin.Context) {
-	var counters []models.Counter
-	c1 := models.Counter{
-		MetricName: "test1",
-		MetricID:   12,
-	}
-	c2 := models.Counter{
-		MetricName: "test2",
-		MetricID:   1223465,
-	}
-	counters = append(counters, c1, c2)
+	//var counters []models.Counter
 
-	//if err := unload.Unload("test_counter", counters); err != nil {
-	//	log.Printf("err - %s", err)
-	//	return
-	//}
-	c.File("./tmp/counter.js")
+	files, err := h.services.Counter.UnloadAllNewCounters()
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+	for _, file := range files {
+		c.File(file)
+	}
+	return
 }

@@ -86,6 +86,7 @@ func (srv *DomainSRV) SetStatus(domain models.Domain) error {
 	return nil
 }
 
+// Run todo refactor
 func (srv *DomainSRV) Run() error {
 
 	// получаем домены из БД
@@ -95,7 +96,7 @@ func (srv *DomainSRV) Run() error {
 	}
 
 	checkLabels := labelService.NewLabelService(srv.lg, srv.ym, srv.db, srv.promo)
-	checkConters := counterService.NewCounterService(srv.lg, srv.db, srv.promo, srv.ym)
+	checkCounters := counterService.NewCounterService(srv.lg, srv.db, srv.promo, srv.ym)
 
 	// выбираем домены обхода
 	for _, domain := range dbDomains {
@@ -110,7 +111,9 @@ func (srv *DomainSRV) Run() error {
 
 			//  проверяем что они есть
 			if len(labels) != 0 {
+
 				for _, label := range labels {
+
 					counters, err := srv.promo.GetPromoUrls(&label)
 					if err != nil {
 						// todo: add log error
@@ -118,7 +121,9 @@ func (srv *DomainSRV) Run() error {
 					}
 
 					for _, counter := range counters {
-						_, err := checkConters.CheckCounter(&counter)
+
+						counter.LabelID = label.ID
+						_, err := checkCounters.CheckCounter(&counter)
 						if err != nil {
 							// todo: add log error
 							continue

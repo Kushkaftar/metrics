@@ -27,7 +27,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	api := router.Group("/api")
 	{
 		api.GET("/unload", h.unload)
-		api.GET("/app", h.run)
+		api.GET("/run", h.run)
 
 		domain := api.Group("domain")
 		{
