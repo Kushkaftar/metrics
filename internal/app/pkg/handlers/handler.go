@@ -4,7 +4,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"metrics/internal/service"
+	"metrics/internal/app/service/service"
 )
 
 type Handler struct {
@@ -27,7 +27,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	api := router.Group("/api")
 	{
 		api.GET("/unload", h.unload)
-		api.GET("/run", h.run)
+		api.GET("/app", h.run)
 
 		domain := api.Group("domain")
 		{

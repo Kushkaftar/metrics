@@ -1,4 +1,4 @@
-package run
+package app
 
 import (
 	"net/http"

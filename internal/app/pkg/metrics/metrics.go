@@ -1,11 +1,10 @@
 package metrics
 
 import (
-	"metrics/internal/models"
-	"metrics/pkg/utils/client"
-	"metrics/pkg/utils/urlKit"
-
 	"go.uber.org/zap"
+	"metrics/internal/models"
+	"metrics/pkg/client"
+	"metrics/pkg/urlKit"
 )
 
 const (

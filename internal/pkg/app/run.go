@@ -1,15 +1,14 @@
-package run
+package app
 
 import (
-	"metrics/internal/models"
-	"metrics/internal/service"
-	"metrics/pkg/db"
-	"metrics/pkg/handlers"
-	"metrics/pkg/logging"
-	"metrics/pkg/metrics"
-	"metrics/pkg/promo"
-
 	"go.uber.org/zap"
+	"metrics/internal/app/pkg/db"
+	"metrics/internal/app/pkg/handlers"
+	"metrics/internal/app/pkg/metrics"
+	"metrics/internal/app/pkg/promo"
+	"metrics/internal/app/service/service"
+	"metrics/internal/models"
+	"metrics/pkg/logging"
 
 	_ "github.com/lib/pq"
 )
