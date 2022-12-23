@@ -15,9 +15,6 @@ func NewLogger(c *models.Config) *zap.Logger {
 	cfg.EncodeTime = zapcore.ISO8601TimeEncoder
 	fileEncoder := zapcore.NewJSONEncoder(cfg)
 
-	//now := time.Now().Unix()
-	//fileName := fmt.Sprintf("%d_log.json", now)
-
 	//todo: add check folder, and create folder
 	path := fmt.Sprintf("%s/%s", c.Logs.Path, c.Logs.FileName)
 

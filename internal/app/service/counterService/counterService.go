@@ -53,12 +53,8 @@ func (s *CounterService) CheckCounter(counter *models.Counter) (bool, error) {
 func (s *CounterService) checkCounterDB(counter *models.Counter) (bool, error) {
 	if err := s.db.Counter.GetCounter(counter); err != nil {
 		if err == sql.ErrNoRows {
-			s.lg.Info("counter sql.ErrNoRows",
-				zap.Error(err))
 			return false, nil
 		} else {
-			s.lg.Info("counter sql err",
-				zap.Error(err))
 			return false, err
 		}
 	}

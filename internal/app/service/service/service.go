@@ -26,16 +26,23 @@ type Counter interface {
 	UnloadAllNewCounters() ([]string, error)
 }
 
+type Download interface {
+	GetLabelList(date string) ([]models.Label, error)
+	DownloadFile(id int) (string, error)
+}
+
 type Service struct {
 	Domain
 	Label
 	Counter
+	Download
 }
 
 func NewService(lg *zap.Logger, ym *metrics.Metrics, db *db.DB, promo *promo.Promo) *Service {
 	return &Service{
-		Domain:  newDomainSRV(lg, db, promo, ym),
-		Label:   newLabelSRV(lg, db, promo, ym),
-		Counter: newCounterSRV(lg, db, promo, ym),
+		Domain:   newDomainSRV(lg, db, promo, ym),
+		Label:    newLabelSRV(lg, db, promo, ym),
+		Counter:  newCounterSRV(lg, db, promo, ym),
+		Download: newDownloadSRV(lg, db, promo, ym),
 	}
 }

@@ -1,9 +1,7 @@
 "use strict";
 var ymetrika = {
-    {{range .}}
-    "{{.MetricName}}": {{.MetricID}},
-    {{end}}
-};
+    {{range .}}"{{.MetricName}}": {{.MetricID}},
+    {{end}}};
 var metriks = function metriks(label) {
     (function (m, e, t, r, i, k, a) {
         m[i] = m[i] || function () {
@@ -19,11 +17,11 @@ var metriks = function metriks(label) {
         webvisor: true
     });
 };
+
 var pathName = document.location.pathname;
-var pathNameArr = pathName.split('/');
-var version = pathNameArr.filter(function (item) {
-    if (item in ymetrika) return item;
-}).join();
-if (version in ymetrika) {
-    metriks(ymetrika[version]);
-};
+
+for (var key in ymetrika) {
+    if (pathName.includes(key)) {
+        metriks(ymetrika[key])
+    }
+}

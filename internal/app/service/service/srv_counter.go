@@ -9,6 +9,7 @@ import (
 	"metrics/internal/app/service/counterService"
 	"metrics/internal/models"
 	"metrics/pkg/unload"
+	"time"
 )
 
 type CounterSRV struct {
@@ -21,8 +22,11 @@ type CounterSRV struct {
 func (srv *CounterSRV) UnloadAllNewCounters() ([]string, error) {
 	var paths []string
 
+	now := time.Now()
+	date := now.Format("2006-01-02")
+
 	// запрашиваем метки созданных счетчиков
-	labelsNewCounter, err := srv.db.Counter.GetLabelInNewCounters()
+	labelsNewCounter, err := srv.db.Counter.GetLabelInNewCounters(date)
 	if err != nil {
 		return nil, err
 	}
@@ -76,23 +80,19 @@ func (srv *CounterSRV) UnloadAllNewCounters() ([]string, error) {
 
 func (srv *CounterSRV) GetCounters(domain models.Domain) ([]models.Counter, error) {
 	var domainCounters []models.Counter
-	srv.lg.Info("2 - SERVICE GetCounters, crete slice domainCounters")
+
 	check := counterService.NewCounterService(srv.lg, srv.db, srv.promo, srv.metrics)
-	srv.lg.Info("3 - SERVICE GetCounters, init check counter")
 
 	// получаем метки домена
 	labels, err := srv.db.Label.GetLabelInDomainID(domain.ID)
-	srv.lg.Info("4 - SERVICE GetCounters, get labels")
 
 	if err != nil {
 		return nil, err
 	}
 
 	for _, label := range labels {
-		srv.lg.Info("5 - SERVICE GetCounters, range labels")
 
 		counters, err := srv.promo.GetPromoUrls(&label)
-		srv.lg.Info("6 - SERVICE GetCounters, gel all lands in promo")
 		if err != nil {
 			return nil, err
 		}
@@ -104,13 +104,13 @@ func (srv *CounterSRV) GetCounters(domain models.Domain) ([]models.Counter, erro
 				srv.lg.Error("error check counter",
 					zap.Error(err))
 			}
-			srv.lg.Info("7 - SERVICE GetCounters, check counter")
+
 			//log.Printf("counter - %+v", counter)
 			domainCounters = append(domainCounters, counter)
 		}
 
 	}
-	srv.lg.Info("8 - SERVICE GetCounters, return all counters")
+
 	// todo add GetCounters
 	return domainCounters, nil
 }

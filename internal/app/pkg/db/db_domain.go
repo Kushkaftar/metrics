@@ -21,7 +21,7 @@ func (db DomainDB) CreateDomain(domain *models.Domain) error {
 
 	row := db.db.QueryRow(query, domain.Name, domain.Status)
 	if err := row.Scan(&id); err != nil {
-		db.lg.Error("CreateCounter",
+		db.lg.Error("CreateDomain",
 			zap.Error(err))
 		return err
 	}

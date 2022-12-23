@@ -5,7 +5,6 @@ import (
 	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
 	"metrics/internal/models"
-	"time"
 )
 
 type CounterDB struct {
@@ -40,13 +39,13 @@ func (db CounterDB) GetCounter(counter *models.Counter) error {
 	return nil
 }
 
-func (db CounterDB) GetLabelInNewCounters() ([]int, error) {
+func (db CounterDB) GetLabelInNewCounters(date string) ([]int, error) {
 	var labels []int
 
 	query := fmt.Sprintf("SELECT DISTINCT label_id FROM %s WHERE created_at=$1", countersTable)
 
-	now := time.Now()
-	date := now.Format("2006-01-02")
+	//now := time.Now()
+	//date := now.Format("2006-01-02")
 
 	if err := db.db.Select(&labels, query, date); err != nil {
 		db.lg.Error("GetLabelInNewCounters",

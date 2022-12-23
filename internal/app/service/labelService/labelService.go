@@ -66,12 +66,8 @@ func (s *LabelService) checkLabelDB(label *models.Label) (bool, error) {
 
 	if err := s.db.GetLabelInName(label); err != nil {
 		if err == sql.ErrNoRows {
-			s.lg.Info("labels sql.ErrNoRows",
-				zap.Error(err))
 			return false, nil
 		} else {
-			s.lg.Info("labels sql err",
-				zap.Error(err))
 			return false, err
 		}
 	}

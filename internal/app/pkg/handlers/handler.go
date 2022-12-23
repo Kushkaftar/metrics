@@ -29,6 +29,12 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		api.GET("/unload", h.unload)
 		api.GET("/run", h.run)
 
+		download := api.Group("download")
+		{
+			download.GET("/", h.getListFileToDownload)
+			download.GET("/:id", h.downloadFile)
+		}
+
 		domain := api.Group("domain")
 		{
 			domain.GET("", h.getAllDomains)
