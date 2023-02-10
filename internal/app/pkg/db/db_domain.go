@@ -30,29 +30,29 @@ func (db DomainDB) CreateDomain(domain *models.Domain) error {
 }
 
 func (db DomainDB) GetDomain(domainName string) (*models.Domain, error) {
-	var domain models.Domain
+	domain := models.NewDomain()
 
 	query := fmt.Sprintf("SELECT * FROM %s WHERE name=$1", domainTable)
-	if err := db.db.Get(&domain, query, domainName); err != nil {
+	if err := db.db.Get(domain, query, domainName); err != nil {
 		db.lg.Error("GetDomain",
 			zap.Error(err))
 		return nil, err
 	}
 
-	return &domain, nil
+	return domain, nil
 }
 
 func (db DomainDB) GetAllDomains() ([]models.Domain, error) {
-	var domains []models.Domain
+	domains := models.NewDomains()
 
 	query := fmt.Sprintf("SELECT * FROM %s", domainTable)
-	if err := db.db.Select(&domains, query); err != nil {
+	if err := db.db.Select(domains, query); err != nil {
 		db.lg.Error("GetAllLabels",
 			zap.Error(err))
 		return nil, err
 	}
 
-	return domains, nil
+	return *domains, nil
 }
 
 func (db DomainDB) UpdateStatus(domain *models.Domain) error {

@@ -26,7 +26,6 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	api := router.Group("/api")
 	{
-		api.GET("/unload", h.unload)
 		api.GET("/run", h.run)
 
 		download := api.Group("download")
@@ -40,6 +39,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			domain.GET("", h.getAllDomains)
 			domain.POST("/set_status", h.setStatus)
 			domain.POST("/check_labels", h.addLabels)
+			domain.POST("/change", h.change)
+			domain.POST("/delete", h.delete)
 
 			labels := domain.Group("/:id/labels")
 			{

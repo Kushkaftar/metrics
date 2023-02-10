@@ -103,7 +103,7 @@ func (m *Metrics) SetLabelInCounter(counter *models.Counter, label *models.Label
 		return m.mErr(string(resp.Body), err)
 	}
 
-	counter.LabelID = label.MetricID
+	counter.LabelID = label.ID
 
 	return nil
 }

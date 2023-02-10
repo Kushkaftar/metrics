@@ -1,7 +1,9 @@
 package service
 
 import (
+	"fmt"
 	"go.uber.org/zap"
+	"log"
 	"metrics/internal/app/pkg/db"
 	"metrics/internal/app/pkg/metrics"
 	"metrics/internal/app/pkg/promo"
@@ -22,6 +24,39 @@ type DomainSRV struct {
 	db    *db.DB
 	promo *promo.Promo
 	ym    *metrics.Metrics
+}
+
+func (srv *DomainSRV) Delete(domain *models.Domain) error {
+
+	log.Print(domain)
+	// получить метки домена
+	labels, err := srv.db.Label.GetLabelInDomainID(domain.ID)
+	if err != nil {
+		return err
+	}
+
+	// получить счетчики меток
+	var counters []models.Counter
+
+	for _, label := range labels {
+		c, err := srv.db.Counter.GetCountersLabel(label.ID)
+		if err != nil {
+			srv.lg.Error("error get domain label",
+				zap.String("label", fmt.Sprintf("%+v", label)),
+				zap.Error(err))
+			return err
+		}
+		counters = append(counters, c...)
+	}
+	// удалить счетчики
+	for _, counter := range counters {
+		if err := srv.ym.DelCounter(&counter); err != nil {
+			srv.lg.Error("error delete counter",
+				zap.String("counter", fmt.Sprintf("%+v", counter)),
+				zap.Error(err))
+		}
+	}
+	return nil
 }
 
 func (srv *DomainSRV) GetAllDomains() ([]models.Domain, error) {

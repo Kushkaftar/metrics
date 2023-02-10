@@ -13,6 +13,7 @@ import (
 type Domain interface {
 	GetAllDomains() ([]models.Domain, error)
 	SetStatus(models.Domain) error
+	Delete(domain *models.Domain) error
 	Run() error
 }
 

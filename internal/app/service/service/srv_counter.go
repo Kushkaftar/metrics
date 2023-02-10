@@ -8,6 +8,7 @@ import (
 	"metrics/internal/app/pkg/promo"
 	"metrics/internal/app/service/counterService"
 	"metrics/internal/models"
+	"metrics/pkg/errWrap"
 	"metrics/pkg/unload"
 	"time"
 )
@@ -18,6 +19,10 @@ type CounterSRV struct {
 	promo   *promo.Promo
 	metrics *metrics.Metrics
 }
+
+var (
+	ErrorsNoNewCounter = errors.New("no new counters")
+)
 
 func (srv *CounterSRV) UnloadAllNewCounters() ([]string, error) {
 	var paths []string
@@ -33,7 +38,7 @@ func (srv *CounterSRV) UnloadAllNewCounters() ([]string, error) {
 
 	// если новых счетчиков нет выходим
 	if len(labelsNewCounter) == 0 {
-		return nil, errors.New("no new counters")
+		return nil, errWrap.Wrap("unload new counters", ErrorsNoNewCounter)
 	}
 
 	// удаляем все файлы из папки для хранения файлов с кодом счетчиков

@@ -11,16 +11,6 @@ type CreateCounter struct {
 	Counter Counter `json:"counter"`
 }
 
-//type createNewCounter struct {
-//	Name                  string      `json:"name"`
-//	GdprAgreementAccepted int         `json:"gdpr_agreement_accepted"`
-//	Site                  string      `json:"site"`
-//	Webvisor              Webvisor    `json:"webvisor"`
-//	Goals                 []Goal      `json:"goals"`
-//	Operations            []Operation `json:"operations"`
-//	CodeOptions           CodeOptions `json:"code_options"`
-//}
-
 type Counter struct {
 	Id                    int         `json:"id"`
 	Status                string      `json:"status"`

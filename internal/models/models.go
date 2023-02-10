@@ -2,12 +2,6 @@ package models
 
 import "time"
 
-type Domain struct {
-	ID     int    `db:"id" json:"id"`
-	Name   string `db:"name" json:"name"`
-	Status int    `db:"status" json:"status"`
-}
-
 type Label struct {
 	ID         int    `db:"id" json:"id"`
 	DomainID   int    `db:"domain_id" json:"domain_id"`
